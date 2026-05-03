@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
+import { loginStyles } from './loginStyles';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isFocused, setIsFocused] = useState({ username: false, password: false });
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -29,57 +31,82 @@ const Login = () => {
         }
     };
 
+    const getInputStyle = (field) => ({
+        ...loginStyles.input,
+        ...(isFocused[field] && loginStyles.inputFocus),
+    });
+
     return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-4">
-                    <div className="card">
-                        <div className="card-header text-center">
-                            <h3>🏥 Hospital El Salvador</h3>
-                            <h5>Iniciar Sesión</h5>
-                        </div>
-                        <div className="card-body">
-                            {error && (
-                                <div className="alert alert-danger">{error}</div>
-                            )}
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label className="form-label">Usuario</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        required
-                                    />
+        <div style={loginStyles.container}>
+            <div style={loginStyles.overlay}>
+                
+                            <div style={loginStyles.card} className="fade-in-up">
+                                <div style={loginStyles.cardHeader}> 
+                                    <h3 style={loginStyles.title}> TU SALUD CM</h3>
+                                    <h5 style={loginStyles.subtitle}>Iniciar Sesión</h5>
                                 </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Contraseña</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                    />
+                                <div style={loginStyles.cardBody}>
+                                    {error && (
+                                        <div style={loginStyles.errorAlert}>
+                                            {error}
+                                        </div>
+                                    )}
+                                    <form onSubmit={handleSubmit}>
+                                        <div className="mb-3">
+                                            <label style={loginStyles.label}>Usuario</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                style={getInputStyle('username')}
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                onFocus={() => setIsFocused({ ...isFocused, username: true })}
+                                                onBlur={() => setIsFocused({ ...isFocused, username: false })}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label style={loginStyles.label}>Contraseña</label>
+                                            <input
+                                                type="password"
+                                                className="form-control"
+                                                style={getInputStyle('password')}
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                onFocus={() => setIsFocused({ ...isFocused, password: true })}
+                                                onBlur={() => setIsFocused({ ...isFocused, password: false })}
+                                                required
+                                            />
+                                        </div>
+                                        <button 
+                                            type="submit" 
+                                            style={{
+                                                ...loginStyles.button,
+                                                ...(loading && loginStyles.buttonDisabled)
+                                            }}
+                                            className="btn-hover"
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Cargando...' : 'Ingresar'}
+                                        </button>
+                                    </form>
                                 </div>
-                                <button 
-                                    type="submit" 
-                                    className="btn btn-primary w-100"
-                                    disabled={loading}
-                                >
-                                    {loading ? 'Cargando...' : 'Ingresar'}
-                                </button>
-                            </form>
-                        </div>
-                        <div className="card-footer text-center">
-                            <Link to="/register">¿No tienes cuenta? Regístrate aquí</Link>
-                        </div>
-                    </div>
-                </div>
+                                <div style={loginStyles.cardFooter}>
+                                    <Link 
+                                        to="/register" 
+                                        style={loginStyles.link}
+                                        className="link-hover"
+                                    >
+                                        ¿No tienes cuenta? Regístrate aquí
+                                    </Link>
+                                </div>
+                            </div>
+                        
+                    
+                
             </div>
         </div>
-    );
+    );  
 };
 
 export default Login;
