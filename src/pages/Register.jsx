@@ -1,6 +1,8 @@
+// src/pages/Register.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
+import { registerStyles } from '../styles/registerStyles'; // Importa los estilos
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -20,6 +22,8 @@ const Register = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+    const [hovered, setHovered] = useState(false);
+    const [focusedInput, setFocusedInput] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -48,159 +52,218 @@ const Register = () => {
         }
     };
 
+    // Estilo dinámico para inputs con focus
+    const getInputStyle = (inputName) => ({
+        ...registerStyles.input,
+        ...(focusedInput === inputName && registerStyles.inputFocus)
+    });
+
     return (
-        <div className="container mt-4">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-header text-center">
-                            <h3>🏥 Registro de Usuario</h3>
+    <div style={registerStyles.container}>
+        <div style={registerStyles.Wrapper}>
+            
+            <div style={registerStyles.card}>                        
+                <div style={registerStyles.cardHeader}>
+                    <h3 style={registerStyles.title}>🏥 Registro de Usuario</h3>
+                </div>
+                
+                <div style={registerStyles.cardBody}>
+                    {error && <div style={registerStyles.errorAlert}>{error}</div>}
+                    {success && <div style={registerStyles.successAlert}>{success}</div>}
+                    
+                    <form onSubmit={handleSubmit}>
+                        {/* Fila 1: Usuario y Email */}
+                        <div style={registerStyles.formRow}>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Usuario *</label>
+                                <input
+                                    type="text"
+                                    name="username"
+                                    style={getInputStyle('username')}
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('username')}
+                                    onBlur={() => setFocusedInput('')}
+                                    required
+                                />
+                            </div>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Email *</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    style={getInputStyle('email')}
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('email')}
+                                    onBlur={() => setFocusedInput('')}
+                                    required
+                                />
+                            </div>
                         </div>
-                        <div className="card-body">
-                            {error && <div className="alert alert-danger">{error}</div>}
-                            {success && <div className="alert alert-success">{success}</div>}
-                            <form onSubmit={handleSubmit}>
-                                <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">Usuario *</label>
-                                        <input
-                                            type="text"
-                                            name="username"
-                                            className="form-control"
-                                            value={formData.username}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">Email *</label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            className="form-control"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">Contraseña *</label>
-                                        <input
-                                            type="password"
-                                            name="password"
-                                            className="form-control"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">Confirmar Contraseña *</label>
-                                        <input
-                                            type="password"
-                                            name="password2"
-                                            className="form-control"
-                                            value={formData.password2}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">Nombre *</label>
-                                        <input
-                                            type="text"
-                                            name="first_name"
-                                            className="form-control"
-                                            value={formData.first_name}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">Apellido *</label>
-                                        <input
-                                            type="text"
-                                            name="last_name"
-                                            className="form-control"
-                                            value={formData.last_name}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-4 mb-3">
-                                        <label className="form-label">Tipo Documento</label>
-                                        <select
-                                            name="document_type"
-                                            className="form-control"
-                                            value={formData.document_type}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="CC">Cédula Ciudadanía</option>
-                                            <option value="TI">Tarjeta Identidad</option>
-                                            <option value="CE">Cédula Extranjería</option>
-                                            <option value="RC">Registro Civil</option>
-                                            <option value="PA">Pasaporte</option>
-                                        </select>
-                                    </div>
-                                    <div className="col-md-4 mb-3">
-                                        <label className="form-label">Documento *</label>
-                                        <input
-                                            type="text"
-                                            name="document_number"
-                                            className="form-control"
-                                            value={formData.document_number}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-4 mb-3">
-                                        <label className="form-label">Teléfono</label>
-                                        <input
-                                            type="text"
-                                            name="phone"
-                                            className="form-control"
-                                            value={formData.phone}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                    <div className="col-12 mb-3">
-                                        <label className="form-label">Dirección</label>
-                                        <input
-                                            type="text"
-                                            name="address"
-                                            className="form-control"
-                                            value={formData.address}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                    <div className="col-12 mb-3">
-                                        <label className="form-label">Fecha Nacimiento</label>
-                                        <input
-                                            type="date"
-                                            name="birth_date"
-                                            className="form-control"
-                                            value={formData.birth_date}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-                                <button 
-                                    type="submit" 
-                                    className="btn btn-primary w-100"
-                                    disabled={loading}
+
+                        {/* Fila 2: Contraseña y Confirmar */}
+                        <div style={registerStyles.formRow}>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Contraseña *</label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    style={getInputStyle('password')}
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('password')}
+                                    onBlur={() => setFocusedInput('')}
+                                    required
+                                />
+                            </div>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Confirmar Contraseña *</label>
+                                <input
+                                    type="password"
+                                    name="password2"
+                                    style={getInputStyle('password2')}
+                                    value={formData.password2}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('password2')}
+                                    onBlur={() => setFocusedInput('')}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {/* Fila 3: Nombre y Apellido */}
+                        <div style={registerStyles.formRow}>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Nombre *</label>
+                                <input
+                                    type="text"
+                                    name="first_name"
+                                    style={getInputStyle('first_name')}
+                                    value={formData.first_name}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('first_name')}
+                                    onBlur={() => setFocusedInput('')}
+                                    required
+                                />
+                            </div>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Apellido *</label>
+                                <input
+                                    type="text"
+                                    name="last_name"
+                                    style={getInputStyle('last_name')}
+                                    value={formData.last_name}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('last_name')}
+                                    onBlur={() => setFocusedInput('')}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {/* Fila 4: Tipo Documento, Documento y Teléfono */}
+                        <div style={registerStyles.formRow}>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Tipo Documento</label>
+                                <select
+                                    name="document_type"
+                                    style={registerStyles.select}
+                                    value={formData.document_type}
+                                    onChange={handleChange}
                                 >
-                                    {loading ? 'Registrando...' : 'Registrarse'}
-                                </button>
-                            </form>
+                                    <option value="CC">Cédula Ciudadanía</option>
+                                    <option value="TI">Tarjeta Identidad</option>
+                                    <option value="CE">Cédula Extranjería</option>
+                                    <option value="RC">Registro Civil</option>
+                                    <option value="PA">Pasaporte</option>
+                                </select>
+                            </div>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Documento *</label>
+                                <input
+                                    type="text"
+                                    name="document_number"
+                                    style={getInputStyle('document_number')}
+                                    value={formData.document_number}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('document_number')}
+                                    onBlur={() => setFocusedInput('')}
+                                    required
+                                />
+                            </div>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Teléfono</label>
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    style={getInputStyle('phone')}
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('phone')}
+                                    onBlur={() => setFocusedInput('')}
+                                />
+                            </div>
                         </div>
-                        <div className="card-footer text-center">
-                            <Link to="/login">¿Ya tienes cuenta? Inicia sesión aquí</Link>
+
+                        {/* Fila 5: Dirección y Fecha Nacimiento */}
+                        <div style={registerStyles.formRow}>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Dirección</label>
+                                <input
+                                    type="text"
+                                    name="address"
+                                    style={getInputStyle('address')}
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('address')}
+                                    onBlur={() => setFocusedInput('')}
+                                />
+                            </div>
+                            <div style={registerStyles.formGroup}>
+                                <label style={registerStyles.label}>Fecha Nacimiento</label>
+                                <input
+                                    type="date"
+                                    name="birth_date"
+                                    style={getInputStyle('birth_date')}
+                                    value={formData.birth_date}
+                                    onChange={handleChange}
+                                    onFocus={() => setFocusedInput('birth_date')}
+                                    onBlur={() => setFocusedInput('')}
+                                />
+                            </div>
                         </div>
-                    </div>
+
+                        <button 
+                            type="submit" 
+                            style={{
+                                ...registerStyles.button,
+                                ...(hovered && !loading && registerStyles.buttonHover),
+                                ...(loading && registerStyles.buttonDisabled)
+                            }}
+                            onMouseEnter={() => setHovered(true)}
+                            onMouseLeave={() => setHovered(false)}
+                            disabled={loading}
+                        >
+                            {loading ? 'Registrando...' : 'Registrarse'}
+                        </button>
+                    </form>
+                </div>
+                
+                <div style={registerStyles.cardFooter}>
+                    <Link 
+                        to="/login" 
+                        style={registerStyles.link}
+                        onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                        onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                    >
+                        ¿Ya tienes cuenta? Inicia sesión aquí
+                    </Link>
                 </div>
             </div>
-        </div>
-    );
+        </div>  {/* ← Cierre del Wrapper - IMPORTANTE */}
+    </div>
+);
 };
 
 export default Register;

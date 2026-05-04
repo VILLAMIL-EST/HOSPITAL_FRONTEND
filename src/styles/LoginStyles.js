@@ -1,21 +1,10 @@
-import fondoLogin from '../assets/backgrounds/LOGIN_FOND.jpg';
+import { globalContainer } from './GlobalStyles';
+
 
 export const loginStyles = {
-    container: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        minHeight: '100vh',
-        backgroundImage: `url(${fondoLogin})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-        overflow: 'auto', 
-        filter: 'brightness(1)',          
-    },  
+    
+    container: globalContainer,
+
     overlay: {
         minHeight: '100vh',
         width: '100%',
@@ -24,6 +13,7 @@ export const loginStyles = {
         alignItems: 'center',
         justifyContent: 'flex-end',
         padding: '80px',
+        
     },
     
   card: {
