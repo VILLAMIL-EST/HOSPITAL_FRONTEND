@@ -1,3 +1,4 @@
+// src/styles/LoginStyles.js
 import * as styles from './GlobalStyles';
 export const loginStyles = {    
     container: styles.globalContainer,

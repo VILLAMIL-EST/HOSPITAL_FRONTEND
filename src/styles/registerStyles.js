@@ -1,10 +1,13 @@
+// src/styles/registerStyles.js
 import * as styles from './GlobalStyles';
-
-  
 export const registerStyles = {
 
     container: styles.globalContainer,
-    Wrapper: styles.globalwrapper,
+    Wrapper: {
+        ...styles.globalwrapper,
+        backgroundImage: 'linear-gradient(90deg, rgba(0, 0, 0, 0.79) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.79) 100%)',
+
+    },
     card: styles.GlobalCard,
     cardHeader: styles.GlobalCardHeader,    
     title: styles.GlobalTitle,
@@ -61,5 +64,11 @@ export const registerStyles = {
     buttonDisabled: styles.buttonDisabled,
     link: styles.link,
     linkHover: styles.linkHover,
-    
+    inputFocus: {
+        borderColor: '#000dff !important',
+        outline: 'none !important',
+        boxShadow: '0 0 0 3px rgba(0,13,255,0.3) !important',
+        transition: 'all 0.3s ease',
+    },
 }
+    

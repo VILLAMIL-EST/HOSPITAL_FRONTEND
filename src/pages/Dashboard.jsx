@@ -1,10 +1,16 @@
+// src/pages/Dashboard.jsx
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
+import { dashboardStyles } from '../styles/DashboardStyles';
 
 const Dashboard = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showMenu, setShowMenu] = useState(false);
+    const [isHovering, setIsHovering] = useState(false);    
+    const [hoveredItem, setHoveredItem] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,81 +42,150 @@ const Dashboard = () => {
         navigate('/login');
     };
 
+    const handleNavigate = (path) => {
+        setShowMenu(false);
+        if (path === 'citas') {
+            alert('📅 Próximamente: Mis Citas');
+        } else if (path === 'resultados') {
+            alert('📊 Próximamente: Resultados Clínicos');
+        } else if (path === 'perfil') {
+            alert('👤 Próximamente: Mi Perfil');
+        }
+    };
+
     if (loading) {
         return (
-            <div className="container mt-5 text-center">
-                <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
+            <div style={dashboardStyles.container}>
+                <div style={dashboardStyles.overlay}>
+                    <div style={dashboardStyles.mainContent}>
+                        <div className="spinner-border text-light" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="container mt-4">
-            <div className="row">
-                <div className="col-12">
-                    <div className="card">
-                        <div className="card-header bg-primary text-white">
-                            <h4 className="mb-0">🏥 Hospital El Salvador de Ubaté</h4>
+        <div style={dashboardStyles.container}>
+            <div style={dashboardStyles.overlay}>
+                
+                {/* Header */}
+                <nav style={dashboardStyles.navbar}>
+                    <span style={dashboardStyles.brand}>
+                        🏥 Hospital El Salvador de Ubaté
+                    </span>
+                    
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            style={{
+                                ...dashboardStyles.dropdownButton,
+                                ...(isHovering && dashboardStyles.dropdownButtonHover)
+                            }}
+                            onClick={() => setShowMenu(!showMenu)}
+                            onMouseEnter={() => setIsHovering(true)}
+                            onMouseLeave={() => setIsHovering(false)}
+                        >
+                            👤 {user?.first_name} {user?.last_name} ▼
+                        </button>
+                        
+                        {showMenu && (
+                            <div style={dashboardStyles.dropdownMenu}>
+                                <button
+                                    style={{
+                                        ...dashboardStyles.dropdownItem,
+                                        ...(hoveredItem === 'inicio' && dashboardStyles.dropdownItemHover)
+                                    }}
+                                    onMouseEnter={() => setHoveredItem('inicio')}
+                                    onMouseLeave={() => setHoveredItem(null)}
+                                    onClick={() => setShowMenu(false)}
+                                >
+                                    🏠 Inicio
+                                </button>
+                                <div style={dashboardStyles.dropdownDivider}></div>
+                                <button
+                                    style={{
+                                        ...dashboardStyles.dropdownItem,
+                                        ...(hoveredItem === 'citas' && dashboardStyles.dropdownItemHover)
+                                    }}
+                                    onMouseEnter={() => setHoveredItem('citas')}
+                                    onMouseLeave={() => setHoveredItem(null)}
+                                    onClick={() => handleNavigate('citas')}
+                                >
+                                    📅 Mis Citas
+                                </button>
+                                <button
+                                    style={{
+                                        ...dashboardStyles.dropdownItem,
+                                        ...(hoveredItem === 'resultados' && dashboardStyles.dropdownItemHover)
+                                    }}
+                                    onMouseEnter={() => setHoveredItem('resultados')}
+                                    onMouseLeave={() => setHoveredItem(null)}
+                                    onClick={() => handleNavigate('resultados')}
+                                >
+                                    📊 Resultados Clínicos
+                                </button>
+                                <button
+                                    style={{
+                                        ...dashboardStyles.dropdownItem,
+                                        ...(hoveredItem === 'perfil' && dashboardStyles.dropdownItemHover)
+                                    }}
+                                    onMouseEnter={() => setHoveredItem('perfil')}
+                                    onMouseLeave={() => setHoveredItem(null)}
+                                    onClick={() => handleNavigate('perfil')}
+                                >
+                                    👤 Mi Perfil
+                                </button>
+                                <div style={dashboardStyles.dropdownDivider}></div>
+                                <button
+                                    style={{
+                                        ...dashboardStyles.dropdownItem,
+                                        ...dashboardStyles.dropdownLogout,
+                                        ...(hoveredItem === 'logout' && dashboardStyles.dropdownItemHover)
+                                    }}
+                                    onMouseEnter={() => setHoveredItem('logout')}
+                                    onMouseLeave={() => setHoveredItem(null)}
+                                    onClick={handleLogout}
+                                >
+                                    🚪 Cerrar Sesión
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </nav>
+
+                {/* Contenido central */}
+                <div style={dashboardStyles.mainContent}>
+                    <div style={dashboardStyles.welcomeCard}>
+                        <div style={dashboardStyles.welcomeCardHeader}>
+                            <div style={dashboardStyles.welcomeTitle}>
+                                ¡BIENVENIDO!
+                            </div>
+                            <div style={dashboardStyles.welcomeSubtitle}>
+                                {user?.first_name} {user?.last_name}
+                            </div>
                         </div>
-                        <div className="card-body">
-                            <h5>Bienvenido, {user?.first_name} {user?.last_name}</h5>
-                            <hr />
-                            <div className="row mt-4">
-                                <div className="col-md-6">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <h6 className="card-title">📋 Información Personal</h6>
-                                            <p><strong>Usuario:</strong> {user?.username}</p>
-                                            <p><strong>Email:</strong> {user?.email}</p>
-                                            <p><strong>Documento:</strong> {user?.document_type} {user?.document_number}</p>
-                                            <p><strong>Teléfono:</strong> {user?.phone || 'No registrado'}</p>
-                                            <p><strong>Dirección:</strong> {user?.address || 'No registrada'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <h6 className="card-title">🎫 Estado de Verificación</h6>
-                                            <p className="mb-3">
-                                                {user?.verification_status === 'verified' && (
-                                                    <span className="badge bg-success">✓ Verificado</span>
-                                                )}
-                                                {user?.verification_status === 'pending' && (
-                                                    <span className="badge bg-warning text-dark">⏳ Pendiente</span>
-                                                )}
-                                                {user?.verification_status === 'rejected' && (
-                                                    <span className="badge bg-danger">✗ Rechazado</span>
-                                                )}
-                                            </p>
-                                            <hr />
-                                            <button 
-                                                className="btn btn-outline-secondary w-100 mb-2"
-                                                disabled
-                                            >
-                                                📅 Mis Citas (Próximamente)
-                                            </button>
-                                            <button 
-                                                className="btn btn-outline-primary w-100 mb-2"
-                                                disabled
-                                            >
-                                                📊 Ver Resultados (Próximamente)
-                                            </button>
-                                            <button 
-                                                className="btn btn-outline-danger w-100"
-                                                onClick={handleLogout}
-                                            >
-                                                🚪 Cerrar Sesión
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div style={dashboardStyles.welcomeCardBody}>
+                            <div style={{ textAlign: 'center' }}>
+                                <p>Accede a tus servicios desde el menú superior</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* Footer */}
+                <footer style={dashboardStyles.footer}>
+                    <div style={dashboardStyles.footerContent}>
+                        <span style={dashboardStyles.footerItem}>📞 Emergencias: 123</span>
+                        <span style={dashboardStyles.footerItem}>🕐 SIAU: L-V 7:00 AM - 7:00 PM</span>
+                        <span style={dashboardStyles.footerItem}>📧 contacto@hospitalelsalvador.com</span>
+                    </div>
+                    <div style={dashboardStyles.footerCopyright}>
+                        © 2026 Hospital El Salvador de Ubaté - Todos los derechos reservados
+                    </div>
+                </footer>
+                
             </div>
         </div>
     );

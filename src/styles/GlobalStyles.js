@@ -1,3 +1,4 @@
+// src/styles/GlobalStyles.js
 import fondoLogin from '../assets/backgrounds/LOGIN_FOND.jpg';
 export const globalContainer = {
         position: 'fixed',
@@ -27,7 +28,7 @@ export const GlobalCard= {
         backgroundColor: 'white',
         borderRadius: '16px',
         boxShadow: 'radial-gradient(circle at 90% 50%, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.1) 100%)',
-        overflow: 'hidden',
+        overflow: 'visible',
         animation: 'fadeInUp 0.5s ease',
 }
 export const GlobalCardHeader = {
