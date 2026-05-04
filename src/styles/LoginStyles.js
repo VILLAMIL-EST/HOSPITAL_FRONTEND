@@ -1,10 +1,6 @@
-import { globalContainer } from './GlobalStyles';
-
-
-export const loginStyles = {
-    
-    container: globalContainer,
-
+import * as styles from './GlobalStyles';
+export const loginStyles = {    
+    container: styles.globalContainer,
     overlay: {
         minHeight: '100vh',
         width: '100%',
@@ -12,100 +8,23 @@ export const loginStyles = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        padding: '80px',
-        
+        padding: '80px',        
     },
-    
-  card: {
-        backgroundColor: 'white',
-        borderRadius: '16px',
-        boxShadow: 'radial-gradient(circle at 90% 50%, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.1) 100%)',
-        overflow: 'hidden',
-        animation: 'fadeInUp 0.5s ease',
-
-    },
-    cardHeader: {
-        backgroundColor: '#000dff',
-        color: 'white',
-        padding: '25px',
-        textAlign: 'center',
-    },
-    title: {
-        margin: 0,
-        fontSize: '24px',
-        fontWeight: 'bold',
-    },
-    subtitle: {
-        margin: '8px 0 0 0',
-        fontSize: '16px',
-        opacity: 0.9,
-    },
-    cardBody: {
-        padding: '30px',
-    },
-    label: {
-        fontWeight: 500,
-        marginBottom: '5px',
-        display: 'block',
-        color: '#000000',
-    },
-    input: {
-        borderRadius: '20px',
-        border: '1px solid #000dff',
-        padding: '10px 12px',
-        width: '100%',
-        transition: 'all 0.5s ease',
-    },
-    inputFocus: {
-        borderColor: '#3271d0',
-        outline: 'none',
-        boxShadow: '0 0 0 3px rgba(13,110,253,0.1)',
-    },
-    button: {
-        width: '100%',
-        padding: '12px',
-        backgroundColor: '#000dff',
-        color: 'white',
-        border: 'none',
-        borderRadius: '8px',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        marginTop: '10px',
-    },
-    buttonHover: {
-        backgroundColor: '#0b5ed7',
-        transform: 'translateY(-2px)',
-    },
-    buttonDisabled: {
-        backgroundColor: '#6c757d',
-        cursor: 'not-allowed',
-    },
-    cardFooter: {
-        padding: '20px',
-        textAlign: 'center',
-        borderTop: '1px solid #eee',
-    },
-    link: {
-        color: '#000dff',
-        textDecoration: 'none',
-        transition: 'color 0.3s ease',
-    },
-    linkHover: {
-        color: '#000dff',
-        textDecoration: 'underline',
-    },
-    errorAlert: {
-        backgroundColor: '#f8d7da',
-        color: '#ff0e22',
-        padding: '12px',
-        borderRadius: '8px',
-        marginBottom: '20px',
-        border: '1px solid #f5c2c7',
-    },
+    card: styles.GlobalCard,
+    cardHeader: styles.GlobalCardHeader,
+    title: styles.GlobalTitle,
+    subtitle: styles.GlobalSubtitle,
+    cardBody: styles.cardBody,
+    label: styles.label,
+    input: styles.input,
+    button: styles.button,
+    errorAlert: styles.errorAlert,
+    cardFooter: styles.cardFooter,
+    link: styles.link,
+    linkHover: styles.linkHover,
+    buttonDisabled: styles.buttonDisabled,
+    buttonHover: styles.buttonHover,
 };
-
 // Animaciones globales
 export const globalStyles = `
     @keyframes fadeInUp {
