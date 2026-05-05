@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
@@ -23,32 +22,109 @@ const Register = () => {
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
     const [hovered, setHovered] = useState(false);
+    const [passwordErrors, setPasswordErrors] = useState([]);
+    const [touchedPassword, setTouchedPassword] = useState(false);
     const navigate = useNavigate();
 
+    // Función para validar contraseña
+    const validatePassword = (password) => {
+        const errors = [];
+        
+        if (password.length > 0 && password.length < 8) {
+            errors.push("❌ Mínimo 8 caracteres");
+        } else if (password.length >= 8) {
+            errors.push("✅ Mínimo 8 caracteres");
+        }
+        
+        if (password.length > 0 && !/[A-Z]/.test(password)) {
+            errors.push("❌ Al menos una mayúscula (A-Z)");
+        } else if (password.length > 0 && /[A-Z]/.test(password)) {
+            errors.push("✅ Al menos una mayúscula");
+        }
+        
+        if (password.length > 0 && !/[a-z]/.test(password)) {
+            errors.push("❌ Al menos una minúscula (a-z)");
+        } else if (password.length > 0 && /[a-z]/.test(password)) {
+            errors.push("✅ Al menos una minúscula");
+        }
+        
+        if (password.length > 0 && !/\d/.test(password)) {
+            errors.push("❌ Al menos un número (0-9)");
+        } else if (password.length > 0 && /\d/.test(password)) {
+            errors.push("✅ Al menos un número");
+        }
+        
+        if (password.length > 0 && /\s/.test(password)) {
+            errors.push("❌ Sin espacios");
+        } else if (password.length > 0 && !/\s/.test(password)) {
+            errors.push("✅ Sin espacios");
+        }
+        
+        return errors;
+    };
+
     const handleChange = (e) => {
+        const { name, value } = e.target;
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value,
+            [name]: value,
         });
+        
+        // Validar contraseña en tiempo real
+        if (name === 'password') {
+            setPasswordErrors(validatePassword(value));
+        }
+    };
+
+    const handlePasswordFocus = () => {
+        setTouchedPassword(true);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+
+            // Validar que el teléfono no esté vacío
+        if (!formData.phone) {
+            setError('❌ El número de teléfono es obligatorio');
+            return;
+        }
+        
+        // Validar que el teléfono tenga 10 dígitos
+        const phoneClean = formData.phone.replace(/[\s\-\(\)]/g, '');
+        if (phoneClean.length !== 10 || !/^\d+$/.test(phoneClean)) {
+            setError('❌ El teléfono debe tener exactamente 10 dígitos numéricos');
+            return;
+        }
+        
+        // Validar contraseña antes de enviar
+        const hasErrors = passwordErrors.some(error => error.includes('❌'));
+        
+        if (hasErrors) {
+            setError('❌ Corrige los errores de la contraseña antes de continuar');
+            setLoading(false);
+            return;
+        }
+        
+        // Validar que coincidan las contraseñas
+        if (formData.password !== formData.password2) {
+            setError('❌ Las contraseñas no coinciden');
+            setLoading(false);
+            return;
+        }
+        
         setLoading(true);
 
         try {
             const response = await authService.register(formData);
     
-            // ✅ Mensaje personalizado según respuesta del backend
             if (response.data.message) {
                 setSuccess('✅ ' + response.data.message);
             } else {
                 setSuccess('✅ Registro exitoso. Revisa tu correo para verificar tu cuenta.');
             }
             
-            // Esperar 3 segundos y redirigir al login
             setTimeout(() => {
                 navigate('/login');
             }, 3000);
@@ -58,10 +134,8 @@ const Register = () => {
                             'Error al registrar usuario';
             setError(errorMsg);
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
-    
-            
     };
 
     return (
@@ -113,8 +187,47 @@ const Register = () => {
                                         style={registerStyles.input}
                                         value={formData.password}
                                         onChange={handleChange}
+                                        onFocus={handlePasswordFocus}
                                         required
                                     />
+                                    {/* Cuadro informativo de requisitos */}
+                                    {!touchedPassword && (
+                                        <div style={{
+                                            marginTop: '10px',
+                                            padding: '10px',
+                                            backgroundColor: '#f8f9fa',
+                                            border: '1px solid #dee2e6',
+                                            borderRadius: '8px',
+                                            fontSize: '12px'
+                                        }}>
+                                            <strong style={{ color: '#000dff' }}>🔒 Requisitos de la contraseña:</strong>
+                                            <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                                                <li>• Mínimo 8 caracteres</li>
+                                                <li>• Al menos una mayúscula (A-Z)</li>
+                                                <li>• Al menos una minúscula (a-z)</li>
+                                                <li>• Al menos un número (0-9)</li>
+                                                <li>• Sin espacios</li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {/* Mensajes de validación en tiempo real */}
+                                    {touchedPassword && passwordErrors.length > 0 && (
+                                        <div style={{ marginTop: '8px', fontSize: '12px' }}>
+                                            {passwordErrors.map((error, index) => (
+                                                <div key={index} style={{
+                                                    color: error.includes('✅') ? '#28a745' : '#dc3545',
+                                                    marginBottom: '4px'
+                                                }}>
+                                                    {error}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {touchedPassword && formData.password.length >= 8 && passwordErrors.length === 0 && formData.password && (
+                                        <div style={{ marginTop: '8px', fontSize: '12px', color: '#28a745' }}>
+                                            🔒 Contraseña segura
+                                        </div>
+                                    )}
                                 </div>
                                 <div style={registerStyles.formGroup}>
                                     <label style={registerStyles.label}>Confirmar Contraseña *</label>
@@ -126,13 +239,23 @@ const Register = () => {
                                         onChange={handleChange}
                                         required
                                     />
+                                    {formData.password2 && formData.password !== formData.password2 && (
+                                        <div style={{ marginTop: '8px', fontSize: '12px', color: '#dc3545' }}>
+                                            ❌ Las contraseñas no coinciden
+                                        </div>
+                                    )}
+                                    {formData.password2 && formData.password === formData.password2 && formData.password && (
+                                        <div style={{ marginTop: '8px', fontSize: '12px', color: '#28a745' }}>
+                                            ✅ Las contraseñas coinciden
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
                             {/* Fila 3: Nombre y Apellido */}
                             <div style={registerStyles.formRow}>
                                 <div style={registerStyles.formGroup}>
-                                    <label style={registerStyles.label}>Nombre *</label>
+                                    <label style={registerStyles.label}>Nombre/s *</label>
                                     <input
                                         type="text"
                                         name="first_name"
@@ -143,7 +266,7 @@ const Register = () => {
                                     />
                                 </div>
                                 <div style={registerStyles.formGroup}>
-                                    <label style={registerStyles.label}>Apellido *</label>
+                                    <label style={registerStyles.label}>Apellido/s *</label>
                                     <input
                                         type="text"
                                         name="last_name"
@@ -184,13 +307,14 @@ const Register = () => {
                                     />
                                 </div>
                                 <div style={registerStyles.formGroup}>
-                                    <label style={registerStyles.label}>Teléfono</label>
+                                    <label style={registerStyles.label}>Teléfono *</label>
                                     <input
                                         type="text"
                                         name="phone"
                                         style={registerStyles.input}
                                         value={formData.phone}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
