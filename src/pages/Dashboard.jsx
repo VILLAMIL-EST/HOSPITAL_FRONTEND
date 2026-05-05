@@ -55,7 +55,7 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div style={dashboardStyles.container}>
+            <div style={dashboardStyles.container1}>
                 <div style={dashboardStyles.overlay}>
                     <div style={dashboardStyles.mainContent}>
                         <div className="spinner-border text-light" role="status">
@@ -68,13 +68,13 @@ const Dashboard = () => {
     }
 
     return (
-        <div style={dashboardStyles.container}>
+        <div style={dashboardStyles.container1}>
             <div style={dashboardStyles.overlay}>
                 
                 {/* Header */}
                 <nav style={dashboardStyles.navbar}>
                     <span style={dashboardStyles.brand}>
-                        🏥 Hospital El Salvador de Ubaté
+                         HOSPITAL EL SALVADOR DE UBATÉ
                     </span>
                     
                     <div style={{ position: 'relative' }}>
@@ -101,7 +101,7 @@ const Dashboard = () => {
                                     onMouseLeave={() => setHoveredItem(null)}
                                     onClick={() => setShowMenu(false)}
                                 >
-                                    🏠 Inicio
+                                    🏠 Panel Principal
                                 </button>
                                 <div style={dashboardStyles.dropdownDivider}></div>
                                 <button

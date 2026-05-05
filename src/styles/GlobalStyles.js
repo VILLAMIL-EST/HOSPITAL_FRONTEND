@@ -1,5 +1,7 @@
 // src/styles/GlobalStyles.js
 import fondoLogin from '../assets/backgrounds/LOGIN_FOND.jpg';
+import fondoLogin1 from '../assets/backgrounds/FondoDashboard.jpg';
+
 export const globalContainer = {
         position: 'fixed',
         top: 0,
@@ -8,6 +10,21 @@ export const globalContainer = {
         height: '100%',
         minHeight: '100vh',
         backgroundImage: `url(${fondoLogin})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        overflow: 'auto', 
+        filter: 'brightness(1)',   
+}
+export const globalContainer1 = {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        minHeight: '100vh',
+        backgroundImage: `url(${fondoLogin1})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

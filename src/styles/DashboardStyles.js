@@ -3,7 +3,7 @@ import * as styles from '../styles/GlobalStyles';
 
 export const dashboardStyles = {
     // Usando estilos globales
-    container: styles.globalContainer,
+    container1: styles.globalContainer1,
     
     // Overlay específico del dashboard (diferente al login)
     overlay: {
@@ -31,6 +31,9 @@ export const dashboardStyles = {
         cursor: 'pointer',
         letterSpacing: '1px',
     },
+
+
+
     
     // Botón del menú desplegable
     dropdownButton: {

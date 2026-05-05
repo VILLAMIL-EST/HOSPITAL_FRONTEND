@@ -39,16 +39,29 @@ const Register = () => {
         setLoading(true);
 
         try {
-            await authService.register(formData);
-            setSuccess('Registro exitoso. Ahora puedes iniciar sesión.');
+            const response = await authService.register(formData);
+    
+            // ✅ Mensaje personalizado según respuesta del backend
+            if (response.data.message) {
+                setSuccess('✅ ' + response.data.message);
+            } else {
+                setSuccess('✅ Registro exitoso. Revisa tu correo para verificar tu cuenta.');
+            }
+            
+            // Esperar 3 segundos y redirigir al login
             setTimeout(() => {
                 navigate('/login');
-            }, 2000);
+            }, 3000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Error al registrar usuario');
+            const errorMsg = err.response?.data?.error || 
+                            err.response?.data?.message || 
+                            'Error al registrar usuario';
+            setError(errorMsg);
         } finally {
-            setLoading(false);
+        setLoading(false);
         }
+    
+            
     };
 
     return (
